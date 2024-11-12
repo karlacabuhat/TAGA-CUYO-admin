@@ -1,0 +1,431 @@
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href='https://unpkg.com/boxicons@2.0.9/css/boxicons.min.css' rel='stylesheet'>
+        <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css">
+        <link rel="stylesheet" href="https://unicons.iconscout.com/release/v4.0.0/css/line.css">
+        <link rel="stylesheet" href="lesson_category.css">
+        <title>Kategorya Feature</title>
+    </head>
+    <body>
+       <!-- SIDEBAR -->
+    <section id="sidebar">
+        <a href="dashboard.html" class="brand"><img src="images/logo.png" width="70px" height="70px"> TAGA-CUYO</a>
+        <ul class="side-menu">
+            <li><a href="dashboard.html"><i class='bx bxs-dashboard icon'></i> Admin Dashboard</a></li>
+            <li class="divider" data-text="main">Main</li>
+            <li>
+                <a href="#"><i class='bx bxs-inbox icon'></i> User Management <i class='bx bx-chevron-right icon-right'></i></a>
+                <ul class="side-dropdown">
+                    <li><a href="user_management_user.html" class="active"><i class='mdi mdi-account icon'></i> List of Users</a></li>
+                    <li><a href="ManageStaff2.html"><i class='uil uil-users-alt icon'></i> Manage Staff</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#"><i class='bx bxs-graduation icon' class="active"></i> Learning Feature Status <i class='bx bx-chevron-right icon-right'></i></a>
+                <ul class="side-dropdown">
+                    <li><a href="Pending.html"><i class='bx bxs-book icon'></i>Status</a></li>
+                    <li><a href="lesson.html"><i class='bx bxs-category icon'></i>Aralin</a></li>
+                    <li><a href="category.html"class="active"><i class='bx bxs-category icon'></i>Kategorya</a></li>
+                </ul>
+            </li>
+            <li>
+                <a href="#"><i class='bx bxs-comment icon'></i> Support and Feedback <i class='bx bx-chevron-right icon-right'></i></a>
+                <ul class="side-dropdown">
+                    <li><a href="feedback2.html" class="active"><i class='bx bxs-message-rounded icon'></i>User Feedback</a></li>
+                    <li><a href="user_support.html"><i class='uil uil-headphones-alt icon'></i>User Support</a></li>
+                </ul>
+            </li>
+            <li><a href="terms_and_condition.html"><i class='bx bxs-file icon'></i> Terms and Condition</a></li>
+            <li><a href="settings2.html"><i class='bx bxs-cog icon'></i> Settings</a></li>
+        </ul>
+    </section>
+    <!-- SIDEBAR -->
+
+    <!-- NAVBAR -->
+    <section id="content">
+        <nav>
+            <i class='bx bx-menu toggle-sidebar'></i>
+            <form id="searchForm">
+                <div class="form-group">
+                    <input type="text" id="searchInput" placeholder="Search...">
+                    <i class='bx bx-search icon'></i>
+                </div>
+            </form>
+            <div class="profile">
+                <div class="notification-icon" onclick="toggleNotificationDropdown()">
+                    <i class='bx bxs-bell'></i>
+                    <span id="notificationCounter" class="notification-counter">0</span>
+                </div>
+                <div id="notificationDropdown" class="notification-dropdown hidden">
+                    <h4>Notifications</h4>
+                    <ul id="notificationList">
+                        <!-- Notifications will be populated here -->
+                    </ul>
+                </div>
+                <img src="images/logo.png" alt="Profile Image">
+                <ul class="profile-link">
+                    <li><a href="/settings2.html"><i class='bx bxs-cog'></i> Settings</a></li>
+                    <li><a href="login2.html"><i class='bx bxs-log-out-circle'></i> Logout</a></li>
+                </ul>
+            </div>
+            
+        </nav>
+            <main>
+                <!-- Add Content Button -->
+                <button id="addContentButton" class="btn_add" style="float: right; margin-right: -600px; color:white;">Add Content</button>
+                
+                <!-- Modal for Adding Content -->
+                <div id="addContentModal" class="modal" style="display:none;">
+                    <div class="modal-content">
+                        <span class="close-btn">&times;</span>
+                        <h2>Add New Content</h2>
+                        <form id="addContentForm">
+                            <label for="categorySelect">Select Category:</label>
+                            <select id="categorySelect">
+                                <option value="" disabled selected>Select a category</option>
+                                <!-- Dynamic options will be populated here -->
+                            </select>
+
+                            <select id="subcategorySelect">
+                                <option value="" disabled selected>Select a subcategory</option>
+                            </select>
+
+                            <label for="word">Word:</label>
+                            <input type="text" id="word" name="word" required>
+
+                            <label for="translated">Translated:</label>
+                            <input type="text" id="translated" name="translated" required>
+
+                            <label for="options">Options (comma separated):</label>
+                            <input type="text" id="options" name="options">
+
+                            <label for="imageUpload">Upload Image:</label>
+                            <input type="file" id="imageUpload" name="imageUpload" accept="image/*">
+
+                            <div class="submit-bb">
+                                <button type="submit" class="btn btn-submit" style="background-color: rgb(32, 240, 46); border:none; padding: 10px 20px; border-radius: 5px; margin-top: 10px;">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            
+                <h3>Aralin</h3>
+                <!-- Dropdown to filter categories -->
+                <label for="filterCategory" style="font-size: x-small;">Filter by Category:</label>
+                <select id="filterCategory">
+                    <option value="">All Categories</option>
+                    <!-- Options will be populated dynamically from Firebase -->
+                </select>
+
+                <!-- Table to display categories and words -->
+                <table id="categoriesTable">
+                    <thead>
+                        <tr>
+                            <th style="background-color: rgb(112, 177, 247);text-align: center;">Category Name</th>
+                            <th style="background-color: rgb(112, 177, 247);text-align: center;">Subcategory Names</th>
+                            <th style="background-color: rgb(112, 177, 247);text-align: center;">Word</th>
+                            <th style="background-color: rgb(112, 177, 247);text-align: center;">Translated</th>
+                            <th style="background-color: rgb(112, 177, 247);text-align: center;">Options</th>
+                            <th style="background-color: rgb(112, 177, 247);text-align: center;">Image</th>
+                            <th style="background-color: rgb(112, 177, 247);text-align: center;">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="categoriesTableBody">
+                        <!-- Rows will be populated dynamically with Delete and Edit buttons -->
+                    </tbody>
+                </table>
+            </main>
+        </section>
+
+        <script type="module">
+            import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+            import { getFirestore, collection, getDocs, doc, deleteDoc, updateDoc, addDoc,getDoc } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+            import { getAuth, onAuthStateChanged, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+            import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-storage.js";
+        
+            // Firebase configuration
+            const firebaseConfig = {
+                apiKey: "AIzaSyA_VoT0W3zD6u5GVEa24dLcMkt3DJtnqYg",
+                authDomain: "tagalog-cuyonon-mobile-app.firebaseapp.com",
+                projectId: "tagalog-cuyonon-mobile-app",
+                storageBucket: "tagalog-cuyonon-mobile-app.appspot.com",  // Add storage bucket
+            };
+
+            const app = initializeApp(firebaseConfig);
+            const db = getFirestore(app);
+            const auth = getAuth();
+            const storage = getStorage(app); // Initialize Firebase Storage
+
+            // Show modal when Add Content button is clicked
+            document.getElementById('addContentButton').addEventListener('click', () => {
+                document.getElementById('addContentModal').style.display = 'block';
+            });
+
+            // Close modal when close button is clicked
+            document.querySelector('.close-btn').addEventListener('click', () => {
+                document.getElementById('addContentModal').style.display = 'none';
+            });
+
+            // Load categories for the category dropdown and set up change event to load subcategories
+            async function loadCategories() {
+                try {
+                    const categoriesSnapshot = await getDocs(collection(db, "categories"));
+                    const categorySelect = document.getElementById("categorySelect");
+                    const filterCategory = document.getElementById("filterCategory");
+
+                    // Clear existing options before populating new ones
+                    categorySelect.innerHTML = '<option value="" disabled selected>Select a category</option>';
+                    filterCategory.innerHTML = '<option value="">All Categories</option>';
+
+                    // Populate the categories dynamically for both dropdowns
+                    categoriesSnapshot.forEach((doc) => {
+                        const option = document.createElement("option");
+                        option.value = doc.id;
+                        option.textContent = doc.data().category_name || doc.id;
+                        categorySelect.appendChild(option);
+
+                        // Populate filter category dropdown
+                        const filterOption = document.createElement("option");
+                        filterOption.value = doc.id;
+                        filterOption.textContent = doc.data().category_name || doc.id;
+                        filterCategory.appendChild(filterOption);
+                    });
+
+                    // Load subcategories when a category is selected
+                    categorySelect.addEventListener("change", () => {
+                        const selectedCategory = categorySelect.value;
+                        loadSubcategories(selectedCategory);
+                    });
+
+                    // Listen for filter category change
+                    filterCategory.addEventListener("change", () => {
+                        const selectedCategory = filterCategory.value;
+                        loadCategoriesAndWords(selectedCategory); // Filter words based on selected category
+                    });
+
+                } catch (error) {
+                    console.error("Error loading categories:", error);
+                }
+            }
+
+            // Load subcategories based on the selected category
+     async function loadSubcategories(categoryId) {
+                const subcategorySelect = document.getElementById("subcategorySelect");
+
+                // Clear existing options
+                subcategorySelect.innerHTML = '<option value="" disabled selected>Select a subcategory</option>';
+
+                try {
+                    const subcategoriesSnapshot = await getDocs(collection(db, "categories", categoryId, "subcategories"));
+
+                    subcategoriesSnapshot.forEach((doc) => {
+                        const option = document.createElement("option");
+                        option.value = doc.id;
+                        option.textContent = doc.data().subcategory_name || doc.id;
+                        subcategorySelect.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error("Error loading subcategories:", error);
+                }
+            }
+
+        // Fetch categories, subcategories, and words, and display in the table
+        async function loadCategoriesAndWords(filterCategoryId = "") {
+        try {
+            const categoriesSnapshot = await getDocs(collection(db, "categories"));
+            
+            const categoriesTableBody = document.getElementById("categoriesTableBody");
+            categoriesTableBody.innerHTML = "";
+
+            categoriesSnapshot.forEach(async (categoryDoc) => {
+                if (filterCategoryId === "" || categoryDoc.id === filterCategoryId) {
+                    const categoryName = categoryDoc.data().category_name || categoryDoc.id;
+                    const subcategoriesSnapshot = await getDocs(collection(db, "categories", categoryDoc.id, "subcategories"));
+                    
+                    subcategoriesSnapshot.forEach(async (subcategoryDoc) => {
+                        const subcategoryName = subcategoryDoc.data().subcategory_name || subcategoryDoc.id;
+                        const wordsSnapshot = await getDocs(collection(db, "categories", categoryDoc.id, "subcategories", subcategoryDoc.id, "words"));
+
+                        wordsSnapshot.forEach((wordDoc) => {
+                            const wordData = wordDoc.data();
+                            const word = wordData.word;
+                            const translated = wordData.translated;
+                            const options = Array.isArray(wordData.options) ? wordData.options.join(", ") : "";
+                            const image_path = wordData.image_path || '';
+
+                            const row = document.createElement("tr");
+                            row.innerHTML = `
+                                <td>${categoryName.charAt(0).toUpperCase() + categoryName.slice(1)}</td>
+                                <td>${subcategoryName.charAt(0).toUpperCase() + subcategoryName.slice(1)}</td>
+                                <td>${word}</td>
+                                <td>${translated}</td>
+                                <td>${options}</td>
+                                <td>
+                                    <img src="${image_path}" alt="Uploaded Image" style="width:50px; height:50px;" />
+                                </td>
+                                <td>
+                                    <button class="btn btn-edit"style="background-color: rgb(223, 223, 2); color: white; border:none; padding: 10px 5px;">Edit</button>
+                                    <button class="btn btn-delete delete" style="background-color: #f44336; color: white; border:none; padding: 10px 10px;" data-id="${wordDoc.id}">Delete</button>
+                                </td>
+                            `;
+
+                            categoriesTableBody.appendChild(row);
+                            const editButton = row.querySelector(".btn-edit");
+                            editButton.addEventListener("click", (event) => handleEdit(event));
+
+                            // Now attach the event listener for the delete button
+                            const deleteButton = row.querySelector(".btn-delete");
+                            deleteButton.addEventListener("click", (event) => deleteContent(event, categoryDoc.id, subcategoryDoc.id));
+                        });
+                    });
+                }
+            });
+        } catch (error) {
+            console.error("Error loading categories and words:", error);
+        }
+    }
+
+    async function deleteContent(event, categoryId, subcategoryId) {
+        const wordId = event.target.getAttribute("data-id");
+
+        if (confirm("Are you sure you want to delete this word?")) {
+            try {
+                // Get the current user's email
+                const currentUserEmail = auth.currentUser ? auth.currentUser.email : null;
+
+                // If there's no user, prevent deletion and alert the user
+                if (!currentUserEmail) {
+                    alert("You must be logged in to perform this action.");
+                    return;
+                }
+
+                // Delete the word document from Firestore
+                await deleteDoc(doc(db, "categories", categoryId, "subcategories", subcategoryId, "words", wordId));
+
+                // Log the deletion activity
+                await logActivity("Deleted word", currentUserEmail, { wordId, categoryId, subcategoryId });
+
+                // Reload the categories and words table after deletion
+                loadCategoriesAndWords();  // This will refresh the table
+                alert("Word deleted successfully!");
+            } catch (error) {
+                console.error("Error deleting content:", error);
+                alert("An error occurred while deleting the word.");
+            }
+        }
+    }
+
+    async function logActivity(action, userEmail, details) {
+        try {
+            // Create a log document in Firestore (or log it elsewhere)
+            await addDoc(collection(db, "activity_logs"), {
+                action,
+                userEmail,
+                details,
+                timestamp: new Date()
+            });
+        } catch (error) {
+            console.error("Error logging activity:", error);
+        }
+    }
+
+    async function handleEdit(event) {
+    const editButton = event.target.closest('.btn-edit');
+    const row = editButton.closest('tr');
+    
+    // Get wordId from the button's dataset, and categoryId/subcategoryId from row cells
+    const wordId = editButton.getAttribute("data-id");  // Ensure this is correctly assigned in HTML
+    const categoryId = row.querySelector('td:nth-child(1)').textContent.trim();
+    const subcategoryId = row.querySelector('td:nth-child(2)').textContent.trim();
+
+    // Check for missing IDs
+    if (!wordId || !categoryId || !subcategoryId) {
+        console.error("Error: Missing IDs", { wordId, categoryId, subcategoryId });
+        alert("Unable to edit: missing category, subcategory, or word ID.");
+        return;
+    }
+
+    // Access the editable cells
+    const wordCell = row.querySelector('td:nth-child(3)');
+    const translatedCell = row.querySelector('td:nth-child(4)');
+    const optionsCell = row.querySelector('td:nth-child(5)');
+
+    // Toggle between edit and save mode
+    if (wordCell.contentEditable === "true") {
+        const updatedWord = wordCell.textContent.trim();
+        const updatedTranslated = translatedCell.textContent.trim();
+        const updatedOptions = optionsCell.textContent.trim();
+
+        try {
+            // Update Firestore with new values
+            await updateDoc(doc(db, "categories", categoryId, "subcategories", subcategoryId, "words", wordId), {
+                word: updatedWord,
+                translated: updatedTranslated,
+                options: updatedOptions.split(',').map(option => option.trim())
+            });
+
+            // Log activity if needed
+            await logActivity("Edited word", auth.currentUser.email, { wordId, categoryId, subcategoryId });
+
+            alert("Word updated successfully!");
+            loadCategoriesAndWords();
+        } catch (error) {
+            console.error("Error updating word:", error);
+            alert("An error occurred while updating the word.");
+        }
+    } else {
+        // Make cells editable
+        wordCell.contentEditable = "true";
+        translatedCell.contentEditable = "true";
+        optionsCell.contentEditable = "true";
+        wordCell.focus();
+    }
+}
+    // Form submission handler
+    document.getElementById('addContentForm').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent form from refreshing the page
+
+            const category = document.getElementById('categorySelect').value;
+            const subcategory = document.getElementById('subcategorySelect').value;
+            const word = document.getElementById('word').value;
+            const translated = document.getElementById('translated').value;
+            const options = document.getElementById('options').value.split(',');
+
+            let image_path = '';
+
+            // Handle image upload if an image is selected
+            const file = document.getElementById('imageUpload').files[0];
+            if (file) {
+                const storageRef = ref(storage, `images/${file.name}`);
+                await uploadBytes(storageRef, file);
+                image_path = await getDownloadURL(storageRef);
+            }
+
+            try {
+                // Add the word data to Firestore
+                await addDoc(collection(db, 'categories', category, 'subcategories', subcategory, 'words'), {
+                    word,
+                    translated,
+                    options,
+                    image_path,
+                });
+
+                alert('Content added successfully!');
+                document.getElementById('addContentModal').style.display = 'none';
+                document.getElementById('addContentForm').reset();
+                loadCategoriesAndWords(category, subcategory); // Refresh the displayed content
+            } catch (error) {
+                console.error("Error adding content:", error);
+                alert('Failed to add content.');
+            }
+        });
+            // Initialize by loading categories and words
+            loadCategories();
+            loadCategoriesAndWords(); // Load all words initially
+        </script>
+          <script src="script.js"></script>
+    </body>
+    </html>
