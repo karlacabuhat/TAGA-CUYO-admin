@@ -42,6 +42,8 @@
                         </div>
                     </div>
 
+                    <a href="#" id="forgotPassword" class="forgot-password">Forgot Password?</a>
+
                     <div class="check">
                         <input type="checkbox" id="terms" required>
                         <span>I've read and agree with <a href="terms_and_condition.html" target="_blank">T&C</a></span>
@@ -55,7 +57,7 @@
     <script type="module">
         // Import the Firebase SDK functions
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
-        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+        import { getAuth, signInWithEmailAndPassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
         import { getDatabase, ref, update } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
 
         // Firebase configuration
@@ -116,7 +118,51 @@
                     alert('Error: ' + errorMessage); // Display the error message
                 });
         });
+        document.getElementById('forgotPassword').addEventListener('click', (e) => {
+    e.preventDefault(); // Prevent default anchor behavior
+
+    const email = document.getElementById('email').value.trim(); // Trim to remove spaces
+
+    if (!email) {
+        alert("Please enter your email address to reset your password.");
+        return;
+    }
+
+    sendPasswordResetEmail(auth, email)
+        .then(() => {
+            alert("Password reset email sent! Check your inbox or spam folder.");
+        })
+        .catch((error) => {
+            const errorCode = error.code;
+            const errorMessage = error.message;
+
+            if (errorCode === 'auth/user-not-found') {
+                alert("No user found with this email address.");
+            } else if (errorCode === 'auth/invalid-email') {
+                alert("Invalid email address. Please enter a valid email.");
+            } else {
+                alert('Error: ' + errorMessage);
+            }
+        });
+});
+
     </script>
+
+    <style>
+        /* Add styles for the forgot-password link */
+        .forgot-password {
+            display: block;
+            margin: 10px 0;
+            text-align: right;
+            color: #007BFF;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .forgot-password:hover {
+            text-decoration: underline;
+        }
+    </style>
 </body>
 
 </html>

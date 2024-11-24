@@ -267,7 +267,8 @@
                                     <img src="${image_path}" alt="Uploaded Image" style="width:50px; height:50px;" />
                                 </td>
                                 <td>
-                                    <button class="btn btn-edit"style="background-color: rgb(223, 223, 2); color: white; border:none; padding: 10px 5px;">Edit</button>
+                                    <button class="btn btn-edit" style="background-color: rgb(223, 223, 2); color: white; border:none; padding: 10px 5px;" data-id="${wordDoc.id}" data-category="${categoryDoc.id}" data-subcategory="${subcategoryDoc.id}">Edit</button>
+
                                     <button class="btn btn-delete delete" style="background-color: #f44336; color: white; border:none; padding: 10px 10px;" data-id="${wordDoc.id}">Delete</button>
                                 </td>
                             `;
@@ -334,14 +335,12 @@
 
     async function handleEdit(event) {
     const editButton = event.target.closest('.btn-edit');
-    const row = editButton.closest('tr');
     
-    // Get wordId from the button's dataset, and categoryId/subcategoryId from row cells
-    const wordId = editButton.getAttribute("data-id");  // Ensure this is correctly assigned in HTML
-    const categoryId = row.querySelector('td:nth-child(1)').textContent.trim();
-    const subcategoryId = row.querySelector('td:nth-child(2)').textContent.trim();
+    // Fetch IDs from the button's dataset
+    const wordId = editButton.dataset.id;
+    const categoryId = editButton.dataset.category;
+    const subcategoryId = editButton.dataset.subcategory;
 
-    // Check for missing IDs
     if (!wordId || !categoryId || !subcategoryId) {
         console.error("Error: Missing IDs", { wordId, categoryId, subcategoryId });
         alert("Unable to edit: missing category, subcategory, or word ID.");
@@ -349,41 +348,43 @@
     }
 
     // Access the editable cells
+    const row = editButton.closest('tr');
     const wordCell = row.querySelector('td:nth-child(3)');
     const translatedCell = row.querySelector('td:nth-child(4)');
     const optionsCell = row.querySelector('td:nth-child(5)');
 
     // Toggle between edit and save mode
-    if (wordCell.contentEditable === "true") {
-        const updatedWord = wordCell.textContent.trim();
-        const updatedTranslated = translatedCell.textContent.trim();
-        const updatedOptions = optionsCell.textContent.trim();
-
-        try {
-            // Update Firestore with new values
-            await updateDoc(doc(db, "categories", categoryId, "subcategories", subcategoryId, "words", wordId), {
-                word: updatedWord,
-                translated: updatedTranslated,
-                options: updatedOptions.split(',').map(option => option.trim())
-            });
-
-            // Log activity if needed
-            await logActivity("Edited word", auth.currentUser.email, { wordId, categoryId, subcategoryId });
-
-            alert("Word updated successfully!");
-            loadCategoriesAndWords();
-        } catch (error) {
-            console.error("Error updating word:", error);
-            alert("An error occurred while updating the word.");
-        }
-    } else {
+    if (editButton.textContent.trim() === "Edit") {
         // Make cells editable
         wordCell.contentEditable = "true";
         translatedCell.contentEditable = "true";
         optionsCell.contentEditable = "true";
         wordCell.focus();
+        editButton.textContent = "Save";
+    } else {
+        // Save the updated data
+        const updatedWord = wordCell.textContent.trim();
+        const updatedTranslated = translatedCell.textContent.trim();
+        const updatedOptions = optionsCell.textContent.trim().split(",").map(opt => opt.trim());
+
+        try {
+            await updateDoc(doc(db, "categories", categoryId, "subcategories", subcategoryId, "words", wordId), {
+                word: updatedWord,
+                translated: updatedTranslated,
+                options: updatedOptions,
+            });
+
+            alert("Word updated successfully!");
+            editButton.textContent = "Edit";
+            loadCategoriesAndWords(); // Refresh the table
+        } catch (error) {
+            console.error("Error updating word:", error);
+            alert("An error occurred while updating the word.");
+        }
     }
 }
+
+
     // Form submission handler
     document.getElementById('addContentForm').addEventListener('submit', async (event) => {
             event.preventDefault(); // Prevent form from refreshing the page
