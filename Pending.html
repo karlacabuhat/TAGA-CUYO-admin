@@ -128,7 +128,7 @@
                     <th style="text-align: center;">Admin Action</th>
                 </tr>
             </thead>
-            <tbody id="historyTableBody">
+            <tbody id="historyTableBody" style="font-style:white;">
                 <!-- History entries will be appended here -->
             </tbody>
         </table>
@@ -163,6 +163,8 @@
         }
 
     });
+    
+    document.addEventListener("DOMContentLoaded", loadHistory);
     window.approveContent = async function(docId) {
     const docRef = doc(db, 'activities', docId);
     const docSnapshot = await getDoc(docRef);
@@ -311,9 +313,10 @@ await addDoc(collection(db, 'history'), {
     timestamp: new Date(),
 });
 
-        // Remove the document from the 'activities' collection to clear it from the pending table
-        await deleteDoc(docRef);
-        console.log(`Removed rejected content with docId: ${docId} from activities.`);
+        // Update the document in the 'activities' collection to mark it as approved
+await updateDoc(docRef, { isApprove: true });
+
+console.log(`Marked content with docId: ${docId} as approved in activities.`);
 
         // Remove from Pending Content Table and reload history
         removeFromPendingContentTable(docId);
@@ -581,15 +584,13 @@ function removeFromPendingContentTable(docId) {
             const row = document.createElement('tr');
 
             // Apply background color based on adminAction
-            if (data.adminAction === 'Deleted content') {
-                row.style.backgroundColor = 'red'; // For deleted content
-            } else if (data.adminAction === 'Approved content') {
-                row.style.backgroundColor = 'green'; // For approved content
-            } else if (data.adminAction === 'Edited content') {
-                row.style.backgroundColor = 'green'; // For edited content
-            } else if (data.adminAction === 'Dismissed content') {
-                row.style.backgroundColor = 'gray'; // For dismissed content
-            }
+                    if (data.adminAction === 'Deleted content') {
+                        row.classList.add('deleted-content');
+                    } else if (data.adminAction === 'Added content' || data.adminAction === 'Edited content') {
+                        row.classList.add('added-content');
+                    } else if (data.adminAction === 'Dismissed content') {
+                        row.classList.add('dismissed-content');
+                    }
 
             row.innerHTML = `
                 <td>${data.timestamp.toDate().toLocaleString()}</td>
