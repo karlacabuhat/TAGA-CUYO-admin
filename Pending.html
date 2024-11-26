@@ -420,7 +420,7 @@ function removeFromPendingContentTable(docId) {
                         subcategoryId: null,
                         documentId: docId,
                         contentDetails: `Word ID: ${docId} approved and updated.`,
-                        adminAction: 'Approved content',
+                        adminAction: 'Added content',
                         timestamp: new Date(),
                     });
                 } else {
@@ -461,7 +461,7 @@ function removeFromPendingContentTable(docId) {
                         subcategoryId: docId, // Store subcategoryId (docId)
                         documentId: docId,
                         contentDetails: `Word ID: ${docId} approved and updated.`,
-                        adminAction: 'Approved content',
+                        adminAction: 'Added content',
                         timestamp: new Date(),
                     });
                 } else {
