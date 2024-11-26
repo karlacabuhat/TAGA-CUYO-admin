@@ -547,7 +547,7 @@ table {
 }
 
 table th, table td {
-    padding: 15px;
+    padding: 8px;
     text-align: left;
     border-bottom: 1px solid #ddd;
 }
@@ -555,11 +555,7 @@ table th, table td {
 table th {
     background-color: #f8f9fa;
     font-weight: bold;
-	width: 5000px;
-}
-
-table tr:nth-child(even) {
-    background-color: #f2f2f2;
+	width: 500px;
 }
 
 .reset-btn, .delete-btn {
@@ -590,8 +586,8 @@ table tr:nth-child(even) {
 }
 @media screen and (max-width: 768px) {
     th, td {
-        font-size: 12px; /* Reduce font size for smaller screens */
-        padding: 8px; /* Adjust padding */
+        font-size: 10px; /* Reduce font size for smaller screens */
+        padding: 1px; /* Adjust padding */
     }
 }
 .search-bar {
