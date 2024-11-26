@@ -659,9 +659,9 @@ main .btn-send:hover {
     }
 }
 table th, table td {
-    padding: 12px;
+    
     text-align: left;
-    border-bottom: 1px solid #ddd;
+   
 }
 
 table th {
@@ -671,9 +671,8 @@ table th {
 }
 
 table td {
-    background-color: #ffffff;
     color: #333;
-    font-size: 12px;
+    font-size: 14px;
 }
 
 /* Button Styling */
@@ -773,18 +772,20 @@ table td {
     z-index: 1; /* Ensures the header stays above the content when scrolling */
 	text-align: center;
 }
-
+#historyTableBody {
+	font-style: var(--light);
+}
 
 /* Blocked row styling */
 .blocked {
     background-color: #f8d7da;  /* Light red background */
-    color: #721c24;             /* Dark red text */
+    color: #ed3a3a;             /* Dark red text */
     text-decoration: line-through; /* Strikethrough text */
     pointer-events: none;        /* Disable interaction with the row */
 }
 .rejected {
     background-color: #f8d7da; /* Light red for rejected content */
-    color: #721c24;  /* Dark red text */
+    color: #e8293c;  /* Dark red text */
 }
 
 .rejected td {
@@ -799,13 +800,13 @@ table td {
 	#action-history {
 		margin-top: 20px;
 		padding: 20px;
-		border: 1px solid #ccc;
 		border-radius: 5px;
 	}
 	
 	#history-list {
 		list-style-type: none;
 		padding-left: 0;
+		font-style: var(--light);
 	}
 	
 	#history-list li {
@@ -819,7 +820,14 @@ table td {
 	}
 	
 }
-
+/* Restrict the width of the Requester column */
+#pendingContentTable th:nth-child(8), #pendingContentTable td:nth-child(8), #pendingContentTable td:nth-child(2) {
+    max-width: 150px; /* Adjust this value as needed */
+    word-wrap: break-word; /* Allow text to wrap */
+    white-space: nowrap; /* Prevent text wrapping */
+    text-overflow: ellipsis; /* Show ellipsis for overflowing text */
+    overflow: hidden; /* Hide overflow */
+}
     /* Style for making the table header sticky */
     #pendingContentTable {
         width: 100%;
@@ -850,8 +858,7 @@ table td {
 
     #pendingContentTable th, #pendingContentTable td {
         padding: 8px;
-        text-align: left;
-        border: 1px solid #ddd;
+        text-align: center;
     }
 
 /* Modal styles */
@@ -935,4 +942,19 @@ table td {
     font-size: 35px;
     font-weight: bold;
     cursor: pointer;
+}
+.deleted-content {
+    background-color: rgb(255, 39, 39);
+    font-style: white; /* Ensure text visibility */
+	
+}
+
+.added-content, .edited-content {
+    background-color: rgb(72, 209, 72);
+    color: white;
+}
+
+.dismissed-content {
+    background-color: rgb(172, 170, 170);
+    color: white;
 }
