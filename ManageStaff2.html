@@ -153,7 +153,7 @@ searchInput.addEventListener('keyup', () => {
         <script type="module">
             import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-app.js";
             import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-database.js";
-            import { getAuth, createUserWithEmailAndPassword, updatePassword, sendPasswordResetEmail } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
+            import { getAuth, createUserWithEmailAndPassword, updatePassword, sendPasswordResetEmail,sendEmailVerification } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-auth.js";
             import { getFirestore, doc, setDoc, deleteDoc, collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.13.2/firebase-firestore.js";
 
             const firebaseConfig = {
@@ -196,41 +196,53 @@ searchInput.addEventListener('keyup', () => {
             }
             loadStaffTable();
 
-            const staffForm = document.getElementById('staffForm');
+  const staffForm = document.getElementById('staffForm');
 staffForm.addEventListener('submit', (e) => {
     e.preventDefault();
 
     const staffEmail = document.getElementById('staffEmail').value;
     const staffName = document.getElementById('staffName').value;
-    const staffPassword = document.getElementById('staffPassword').value;  // Updated to use the entered password
+    const staffPassword = 'tagacuyostaff'; // Default password
 
     createUserWithEmailAndPassword(auth, staffEmail, staffPassword)
-        .then((userCredential) => {
-            const userId = userCredential.user.uid;
+    .then((userCredential) => {
+        const user = userCredential.user;
+        const userId = user.uid;
 
-            set(ref(database, 'staff/' + userId), {
+        // Save staff data to Firebase Realtime Database
+        set(ref(database, 'staff/' + userId), {
+            email: staffEmail,
+            name: staffName,
+            createdAt: new Date().toISOString(),
+        }).then(() => {
+            // Save staff data to Firestore
+            setDoc(doc(firestore, 'staff', userId), {
                 email: staffEmail,
                 name: staffName,
-                createdAt: new Date().toISOString()
+                createdAt: new Date(),
             }).then(() => {
-                setDoc(doc(firestore, 'staff', userId), {
-                    email: staffEmail,
-                    name: staffName,
-                    createdAt: new Date()
-                }).then(() => {
-                    alert('Staff added successfully!');
-                    loadStaffTable();
-                    $('#addStaffModal').modal('hide'); // jQuery to hide modal
-                }).catch((error) => {
-                    alert('Failed to save staff to Firestore: ' + error.message);
-                });
+                // Send verification email
+                sendEmailVerification(user)
+                    .then(() => {
+                        alert(`Staff added successfully! A verification email has been sent to ${staffEmail}. Default password: tagacuyostaff`);
+                    })
+                    .catch((error) => {
+                        alert('Failed to send verification email: ' + error.message);
+                    });
+
+                loadStaffTable();
+                modal.style.display = 'none'; // Close modal
             }).catch((error) => {
-                alert('Failed to save staff to Realtime Database: ' + error.message);
+                alert('Failed to save staff to Firestore: ' + error.message);
             });
-        })
-        .catch((error) => {
-            alert('Failed to create staff: ' + error.message);
+        }).catch((error) => {
+            alert('Failed to save staff to Realtime Database: ' + error.message);
         });
+    })
+    .catch((error) => {
+        alert('Failed to create staff: ' + error.message);
+    });
+
 });
 // Password visibility toggle
 const togglePasswordIcon = document.querySelector('.toggle-password');
